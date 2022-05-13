@@ -56,6 +56,7 @@
       <ul>
         <li><a href="#your_fs">Your first server</a></li>
         <li><a href="#router">Router</a></li>
+        <li><a href="#route_methods">Route methods</a></li>
         <li><a href="#req">Req - Request</a></li>
         <li><a href="#res">Res - Response</a></li>
       </ul>
@@ -93,8 +94,42 @@ app.listen(8080);</code></pre>
         Use the Router class to create modular, mountable route handlers.
       </p>
       <p>
-        The following example creates a router as a module, defines some routes, and mounts the router module on a path
-        in the main app.
+        The following example creates a router as a module, defines some routes, and assign router using
+        <code>WebApp.set()</code> function.
+      </p>
+      <pre><code class="language-typescript hljs">import {
+  Req,
+  Res,
+  Router,
+  WebApp,
+} from "https://deno.land/x/denorest@v1.0/mod.ts";
+
+const app = new WebApp();
+
+// create router
+const router = new Router();
+
+// define the home page route
+router.get("/", (_req: Req, res: Res) => {
+  res.reply = {
+    page: "Home",
+  };
+});
+
+// define the about page route
+router.get("/about", (_req: Req, res: Res) => {
+  res.reply = {
+    page: "About",
+  };
+});
+
+// assign router
+app.set(router);
+
+app.listen(8080);</code></pre>
+      <h2 id="route_methods">Route methods</h2>
+      <p>
+        A route method is derived from one of the HTTP methods, and is attached to an instance of the <code>Router</code> class.
       </p>
       <p>
         Create a router file named birds.ts in the app directory, with the following content:
