@@ -1,16 +1,8 @@
-/** @jsx h */
-/// <reference no-default-lib="true"/>
-/// <reference lib="dom" />
-/// <reference lib="dom.asynciterable" />
-/// <reference lib="deno.ns" />
-
 import {
   pathParse,
   Router,
   WebApp,
 } from "https://deno.land/x/denorest@v1.0beta/mod.js";
-import { h, renderSSR } from "https://deno.land/x/nano_jsx@v0.0.20/mod.ts";
-import App from "./view/home.jsx";
 
 const app = new WebApp();
 const router = new Router();
@@ -24,7 +16,7 @@ app.headers({
 
 // home router
 router.all("/", async (req, res) => {
-  const html = renderSSR(<App />);
+  const html = await Deno.readTextFile("index.html");
   res.reply = html;
 });
 
