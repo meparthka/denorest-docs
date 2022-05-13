@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="chrome=1" />
   <title>
-    Denorest | Deno Lightweight, Minimalist Framework For REST API 🦕 🚀
+    Denorest | Lightweight, Minimalist Framework For REST API 🦕 🚀
   </title>
 
   <link rel="stylesheet" href="stylesheets/styles.css" />
@@ -22,7 +22,7 @@
   <div class="wrapper">
     <header>
       <h1><span style="font-weight:500;">Deno</span><span style="font-weight:300;">rest</span></h1>
-      <p>Deno Lightweight, Minimalist Framework For REST API 🦕 🚀</p>
+      <p>Lightweight, Minimalist Framework For REST API 🦕 🚀</p>
       <p class="view">
         <a href="http://github.com/slectgit/denorest">
           View the Project on GitHub <small>slectgit/denorest</small>
@@ -54,17 +54,22 @@
       </p>
 
       <ul>
-        <li><a href="#your_fs">Your first server</a></li>
+        <li><a href="#your_fs">Your First Server</a></li>
         <li><a href="#router">Router</a></li>
-        <li><a href="#route_methods">Route methods</a></li>
+        <li><a href="#route_methods">Route Methods</a></li>
+        <li><a href="#route_prefixing">Route Prefixing</a></li>
         <li><a href="#req">Req - Request</a></li>
         <li><a href="#res">Res - Response</a></li>
+        <li><a href="#get_qrery_n_param">Get Query And Parameter</a></li>
+        <li><a href="#parse">Parse Request Payload</a></li>
+        <li><a href="#https">HTTPS</a></li>
       </ul>
-      <h2 id="your_fs">Your first server</h2>
-      <p>To create a very basic “hello, Deno!” server, you would want to create a server.ts file with the following
+      <h2 id="your_fs">Your First Server</h2>
+      <p>To create a very basic “hello, Deno!” server, you would want to create a <code>server.ts</code> file with the
+        following
         content: </p>
 
-      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.0/mod.ts";
+      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
@@ -102,7 +107,7 @@ app.listen(8080);</code></pre>
   Res,
   Router,
   WebApp,
-} from "https://deno.land/x/denorest@v1.0/mod.ts";
+} from "https://deno.land/x/denorest@v1.1/mod.ts";
 
 const app = new WebApp();
 
@@ -127,19 +132,195 @@ router.get("/about", (_req: Req, res: Res) => {
 app.set(router);
 
 app.listen(8080);</code></pre>
-      <h2 id="route_methods">Route methods</h2>
+      <h2 id="route_methods">Route Methods</h2>
       <p>
-        A route method is derived from one of the HTTP methods, and is attached to an instance of the <code>Router</code> class.
-      </p>
-      <p>
-        Create a router file named birds.ts in the app directory, with the following content:
+        A route method is derived from one of the HTTP methods, and is attached to an instance of the
+        <code>Router</code> class.
       </p>
 
       <p>
-        Then, load the router module in the app:
+        The following code is an example of routes that are defined for the GET and the POST methods to the router
+        module.
       </p>
+
+      <pre><code class="language-typescript hljs">// GET method route
+router.get("/", (req: Req, res: Res) => {
+  res.reply = {
+    page: "Home",
+    method: "GET",
+  };
+});
+
+// POST method route
+router.post("/", (req: Req, res: Res) => {
+  res.reply = {
+    page: "Home",
+    method: "POST",
+  };
+});</code></pre>
+
+      <p>
+        There is a special routing method <code>Router.all()</code>, used to load route functions at a path for all
+        HTTP request
+        methods. For example, the following handler is executed for requests to the route <code>/about</code> whether
+        using GET,
+        POST, PUT, DELETE, or any other HTTP request method supported in the <a target="_blank"
+          href="https://nodejs.org/api/http.html#http_http_methods">http module</a>.
+      </p>
+
+      <pre><code class="language-typescript hljs">router.all("/about", (_req: Req, res: Res) => {
+  res.reply = {
+    page: "About",
+  };
+});</code></pre>
+
+      <h2 id="route_prefixing">Router Prefixing</h2>
+
+      <p>
+        Create a router file named <code>birds.ts</code> in the app directory, with the following content:
+      </p>
+
+      <pre><code class="language-typescript hljs">import { Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+
+// create router
+const router = new Router();
+
+// define the home page route
+router.all("/", (req: Req, res: Res) => {
+  res.reply = {
+    page: "Birds Home",
+  };
+});
+
+// define the about page route
+router.all("/about", (req: Req, res: Res) => {
+  res.reply = {
+    page: "Birds About",
+  };
+});
+
+export default router;</code></pre>
+
+      <p>
+        Then, load the router module in the app using <code>Router.pre()</code> function:
+      </p>
+      <pre><code class="language-typescript hljs">// ...
+
+import birdRouter from "./birds.ts";
+
+// ...
+
+router.pre("/birds", birdRouter);
+
+// assign router
+app.set(router);
+
+// ...</code></pre>
+      <p>
+        The app will now be able to handle requests to <code>/birds</code> and <code>/birds/about</code>
+      </p>
+
+      <h2 id="req">Req - Request</h2>
+      <p>
+        The first parameter of the handler function is <code>Req</code>.
+      </p>
+      <p>Req is a containing the following fields:</p>
+      <ul>
+        <li><code>.body</code></li>
+        <p>The request payload.</p>
+        <li><code>.headers</code></li>
+        <p>The headers of the incoming request.</p>
+        <li><code>.method</code></li>
+        <p>The method of the incoming request.</p>
+        <li><code>.url</code></li>
+        <p>The URL of the incoming request.</p>
+        <li><code>.reg</code></li>
+        <p>The RegExp of the current route.</p>
+      </ul>
+
+      <h2 id="res">Res - Response</h2>
+      <p>
+        The second parameter of the handler function is <code>Res</code>.
+      </p>
+      <p>Res is a containing the following fields:</p>
+      <ul>
+        <li><code>.reply</code></li>
+        <p>Sends the payload to the user, could be a plain text, a buffer, or
+          <code>Record&lt;string | number, string | number&gt;</code>.
+        </p>
+        <li><code>.headers</code></li>
+        <p>Sets all the keys of the object as response headers.</p>
+        <li><code>.status</code></li>
+        <p>Sets the status code.</p>
+      </ul>
+
+      <h2 id="get_qrery_n_param">Get Query And Parameter</h2>
+
+      <p>Route parameters are named URL segments that are used to capture the values specified at their position in the
+        URL.</p>
+
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, pathParse } from "https://deno.land/x/denorest@v1.0/mod.ts";
+
+// ...
+
+router.all("/:username/post/:postId", (req: Req, res: Res) => {
+  // using pathParse() function
+  const path = pathParse(req);
+  console.log(path);
+  res.reply = {
+    username: path.params.username,
+    post_id: path.params.postId
+  };
+});
+
+// ...</code></pre>
+
+      <pre><code class="language-text hljs">
+Route path: /:username/post/:postId
+Request URL: http://localhost:8080/deno/post/12?page=2
+pathParse(Req): { params: { username: "deno", postId: "12" }, query: { page: "2" } }
+</code></pre>
+
+      <h2 id="parse">Parse Request Payload</h2>
+      <p>Support Content-Type:</p>
+      <ul>
+        <li>application/json</li>
+        <li>multipart/form-data</li>
+        <li>application/x-www-form-urlencoded</li>
+      </ul>
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, bodyParse } from "https://deno.land/x/denorest@v1.0/mod.ts";
+
+// ...
+
+router.post("/", async (req: Req, res: Res) => {
+  // using bodyParse() function
+  const body = await bodyParse(req);
+  console.log(body);
+  res.reply = {
+    page: "Home"
+  };
+});
+
+// ...</code></pre>
+      <h2 id="https">HTTPS</h2>
+      <p>HTTPS is supported in all modern browsers</p>
+
+      <pre><code class="language-typescript hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+
+const app = new WebApp();
+const router = new Router();
+
+router.get("/", (_req: Req, res: Res) => {
+  res.reply = "Hello, Deno!";
+});
+
+app.set(router);
+
+app.listenTls(443, "./cert.pem", "./key.pem");</code></pre>
+
     </section>
     <footer>
+      <p>v1.1</p>
       <p>
         This project is maintained by
         <a href="http://github.com/elparthka">Parthka</a>

@@ -3,7 +3,9 @@ import {
   Res,
   Router,
   WebApp,
+  bodyParse,
 } from "https://deno.land/x/denorest@v1.0/mod.ts";
+import birdRouter from "./birds.ts";
 
 const app = new WebApp();
 
@@ -11,18 +13,33 @@ const app = new WebApp();
 const router = new Router();
 
 // define the home page route
-router.get("/", (_req: Req, res: Res) => {
+// GET method route
+router.get("/", (req: Req, res: Res) => {
   res.reply = {
     page: "Home",
+    method: "GET",
+  };
+});
+
+// POST method route
+router.post("/", async (req: Req, res: Res) => {
+  // using bodyParse() function
+  const body = await bodyParse(req);
+  console.log(body);
+  res.reply = {
+    page: "Home",
+    method: "POST",
   };
 });
 
 // define the about page route
-router.get("/about", (_req: Req, res: Res) => {
+router.all("/about", (_req: Req, res: Res) => {
   res.reply = {
     page: "About",
   };
 });
+
+router.pre("/:birdName", birdRouter);
 
 // assign router
 app.set(router);
