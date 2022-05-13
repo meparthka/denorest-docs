@@ -60,6 +60,7 @@
         <li><a href="#route_prefixing">Route Prefixing</a></li>
         <li><a href="#req">Req - Request</a></li>
         <li><a href="#res">Res - Response</a></li>
+        <li><a href="#set_headers">Set Default Header</a></li>
         <li><a href="#get_qrery_n_param">Get Query And Parameter</a></li>
         <li><a href="#parse">Parse Request Payload</a></li>
         <li><a href="#https">HTTPS</a></li>
@@ -253,6 +254,19 @@ app.set(router);
         <li><code>.status</code></li>
         <p>Sets the status code.</p>
       </ul>
+      <h2 id="set_headers">Set Default Headers</h2>
+      <p>
+        Set default headers for all routes using <code>WebApp.headers()</code> function.
+      </p>
+
+      <pre><code class="language-typescript hljs">// ...
+
+const app = new WebApp();
+app.headers({
+  "Content-Type": "text/html"
+})
+
+// ...</code></pre>
 
       <h2 id="get_qrery_n_param">Get Query And Parameter</h2>
 

@@ -8,6 +8,9 @@ import {
 import birdRouter from "./birds.ts";
 
 const app = new WebApp();
+app.headers({
+  "Content-Type": "text/html"
+})
 
 // create router
 const router = new Router();
