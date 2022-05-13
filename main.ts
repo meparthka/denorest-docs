@@ -1,8 +1,10 @@
 import {
   pathParse,
+  Req,
+  Res,
   Router,
   WebApp,
-} from "https://deno.land/x/denorest@v1.0beta/mod.js";
+} from "https://deno.land/x/denorest@v1.0/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
@@ -15,13 +17,13 @@ app.headers({
 });
 
 // home router
-router.all("/", async (req, res) => {
+router.all("/", async (req: Req, res: Res) => {
   const html = await Deno.readTextFile("index.html");
   res.reply = html;
 });
 
 // static file
-router.all("/:dir/:file", async (req, res) => {
+router.all("/:dir/:file", async (req: Req, res: Res) => {
   const p = pathParse(req);
   let text = "";
   try {
