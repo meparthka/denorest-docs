@@ -35,7 +35,7 @@
           </a>
         </li>
         <li>
-          <a href="https://github.com/slectgit/denorest/tree/v1.1">
+          <a href="https://github.com/slectgit/denorest/">
             Fork On <strong>GitHub</strong>
           </a>
         </li>
@@ -58,19 +58,23 @@
         <li><a href="#router">Router</a></li>
         <li><a href="#route_methods">Route Methods</a></li>
         <li><a href="#route_prefixing">Route Prefixing</a></li>
+        <li><a href="#middleware">Middleware</a></li>
         <li><a href="#req">Req - Request</a></li>
         <li><a href="#res">Res - Response</a></li>
         <li><a href="#set_headers">Set Default Header</a></li>
         <li><a href="#get_qrery_n_param">Get Query And Parameter</a></li>
         <li><a href="#parse">Parse Request Payload</a></li>
+        <li><a href="#***">404 Not Found & 500 Internal Server Error</a></li>
         <li><a href="#https">HTTPS</a></li>
+        <li><a href="#http2">HTTP/2</a></li>
+        <li><a href="#contribute">Contribute</a></li>
       </ul>
       <h2 id="your_fs">Your First Server</h2>
       <p>To create a very basic “hello, Deno!” server, you would want to create a <code>server.ts</code> file with the
         following
         content: </p>
 
-      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
@@ -103,12 +107,7 @@ app.listen(8080);</code></pre>
         The following example creates a router as a module, defines some routes, and assign router using
         <code>WebApp.set()</code> function.
       </p>
-      <pre><code class="language-typescript hljs">import {
-  Req,
-  Res,
-  Router,
-  WebApp,
-} from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 const app = new WebApp();
 
@@ -181,7 +180,7 @@ router.post("/", (req: Req, res: Res) => {
         Create a router file named <code>birds.ts</code> in the app directory, with the following content:
       </p>
 
-      <pre><code class="language-typescript hljs">import { Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <pre><code class="language-typescript hljs">import { Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 // create router
 const router = new Router();
@@ -221,6 +220,75 @@ app.set(router);
         The app will now be able to handle requests to <code>/birds</code> and <code>/birds/about</code>
       </p>
 
+      <h2 id="middleware">Middleware</h2>
+
+      <p>
+        Middleware functions are functions that have access to the request object (Req) and response object (Res),
+      </p>
+
+      <p>
+        Bind middleware using <code>Router.use()</code> function.
+      </p>
+
+      <pre><code class="language-typescript hljs">// ...
+
+// create router
+const router = new Router();
+
+// define middleware
+router.use((req: Req, res: Res) => {
+  // ...
+  if (auth) {
+    req.state.auth = true;
+  } else {
+    res.reply = {
+      massage: "Please login",
+    };
+  }
+})
+
+// define the home page route
+router.all("/", (req: Req, res: Res) => {
+  // ...
+  res.reply = {
+    page: "Birds Home",
+  };
+});
+
+// ...</code></pre>
+
+      <p>Use middleware in specific route using route handler third parameter.</p>
+
+      <pre><code class="language-typescript hljs">// ...
+
+// middleware
+const auth = (req: Req, res: Res) => {
+  // ...
+  if (auth) {
+    req.state.auth = true;
+  } else {
+    res.reply = {
+      massage: "Please login",
+    };
+  }
+}
+
+// define the home page route
+router.all("/", (req: Req, res: Res) => {
+  // ...
+});
+
+// define the about page route
+router.all("/about", (req: Req, res: Res) => {
+  res.reply = {
+    page: "Birds About",
+  };
+}, [auth, ...]); // assign middleware in third parameter
+        
+// ...</code></pre>
+
+      <h2 id="separate">Separate Middleware</h2>
+
       <h2 id="req">Req - Request</h2>
       <p>
         The first parameter of the handler function is <code>Req</code>.
@@ -237,6 +305,8 @@ app.set(router);
         <p>The URL of the incoming request.</p>
         <li><code>.reg</code></li>
         <p>The RegExp of the current route.</p>
+        <li><code>.state</code></li>
+        <p>Store state for routing. Type: <br> <code>Record&lt;string | number, string | number | boolean&gt;</code></p>
       </ul>
 
       <h2 id="res">Res - Response</h2>
@@ -273,7 +343,7 @@ app.headers({
       <p>Route parameters are named URL segments that are used to capture the values specified at their position in the
         URL.</p>
 
-      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, pathParse } from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, pathParse } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 // ...
 
@@ -301,7 +371,7 @@ pathParse(Req): { params: { username: "deno", postId: "12" }, query: { page: "2"
         <li>multipart/form-data</li>
         <li>application/x-www-form-urlencoded</li>
       </ul>
-      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, bodyParse } from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, bodyParse } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 // ...
 
@@ -315,10 +385,39 @@ router.post("/", async (req: Req, res: Res) => {
 });
 
 // ...</code></pre>
-      <h2 id="https">HTTPS</h2>
-      <p>HTTPS is supported in all modern browsers</p>
 
-      <pre><code class="language-typescript hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+      <h2 id="***">404 Not Found & 500 Internal Server Error</h2>
+
+      <p>You can handle 404 and 500 response using <code>WebApp.set404()</code> and <code>WebApp.set500()</code>
+        function.</p>
+
+      <pre><code class="language-typescript hljs">// ...
+
+// set 404 route
+app.set404(async (req: any, res: any) => {
+  res.status = 404;
+  res.headers = {
+    "Content-Type": "text/html",
+  };
+  res.reply = "Not Found";
+});
+
+// set 500 route
+app.set500(async (req: any, res: any) => {
+  res.status = 500;
+  res.headers = {
+    "Content-Type": "text/html",
+  };
+  res.reply = "Internal Server Error";
+});
+
+// ...</code></pre>
+
+
+      <h2 id="https">HTTPS</h2>
+      <p>HTTPS is supported in all modern browsers.</p>
+
+      <pre><code class="language-typescript hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
@@ -331,9 +430,29 @@ app.set(router);
 
 app.listenTls(443, "./cert.pem", "./key.pem");</code></pre>
 
+      <h2 id="http2">HTTP/2</h2>
+      <p>
+        HTTP/2 support it "automatic" when using the Denorest. You just need to create your server, and the
+        server will handle HTTP/1 or HTTP/2 requests seamlessly.
+      </p>
+
+      <h2 id="contribute">Contribute</h2>
+
+      <p>If you'd like to contribute, start by searching through the <a
+          href="https://github.com/slectgit/denorest/issues">issues</a> and <a
+          href="https://github.com/slectgit/denorest/pulls">pull requests</a> to see
+        whether someone else has raised a similar idea or question.</p>
+
+      <p>If you don't see your idea listed, and you think it fits into the goals of this guide, do one of the following:</p>
+
+      <ul>
+        <li><b>If your contribution is minor,</b> such as a typo fix, open a pull request.</li>
+        <li><b>If your contribution is major,</b> such as a new feature, start by opening an issue first. That way, other people can weigh in on the discussion before you do any work.</li>
+      </ul>
+
     </section>
     <footer>
-      <p>v1.1</p>
+      <p>v2.0</p>
       <p>
         This project is maintained by
         <a href="http://github.com/elparthka">Parthka</a>

@@ -1,16 +1,16 @@
 import {
+  bodyParse,
   Req,
   Res,
   Router,
   WebApp,
-  bodyParse,
-} from "https://deno.land/x/denorest@v1.0/mod.ts";
+} from "https://deno.land/x/denorest@v2.0/mod.ts";
 import birdRouter from "./birds.ts";
 
 const app = new WebApp();
 app.headers({
-  "Content-Type": "text/html"
-})
+  "Content-Type": "text/html",
+});
 
 // create router
 const router = new Router();

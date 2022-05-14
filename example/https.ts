@@ -1,4 +1,9 @@
-import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v1.1/mod.ts";
+import {
+  Req,
+  Res,
+  Router,
+  WebApp,
+} from "https://deno.land/x/denorest@v1.1/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
