@@ -12,7 +12,7 @@ const auth = (req: Req, res: Res) => {
       massage: "Please login",
     };
   }
-}
+};
 
 // define the home page route
 router.all("/", (req: Req, res: Res) => {
