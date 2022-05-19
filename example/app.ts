@@ -4,7 +4,7 @@ import {
   Res,
   Router,
   WebApp,
-} from "https://deno.land/x/denorest@v2.0/mod.ts";
+} from "https://deno.land/x/denorest@v2.1/mod.ts";
 import birdRouter from "./birds.ts";
 
 const app = new WebApp();

@@ -1,4 +1,4 @@
-import { Req, Res, Router } from "https://deno.land/x/denorest@v2.0/mod.ts";
+import { Req, Res, Router } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 // create router
 const router = new Router();

@@ -74,7 +74,7 @@
         following
         content: </p>
 
-      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-ts hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
@@ -107,7 +107,7 @@ app.listen(8080);</code></pre>
         The following example creates a router as a module, defines some routes, and assign router using
         <code>WebApp.set()</code> function.
       </p>
-      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 const app = new WebApp();
 
@@ -180,7 +180,7 @@ router.post("/", (req: Req, res: Res) => {
         Create a router file named <code>birds.ts</code> in the app directory, with the following content:
       </p>
 
-      <pre><code class="language-typescript hljs">import { Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-typescript hljs">import { Router, Req, Res } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 // create router
 const router = new Router();
@@ -341,7 +341,7 @@ app.headers({
       <p>Route parameters are named URL segments that are used to capture the values specified at their position in the
         URL.</p>
 
-      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, pathParse } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, pathParse } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 // ...
 
@@ -369,7 +369,7 @@ pathParse(Req): { params: { username: "deno", postId: "12" }, query: { page: "2"
         <li>multipart/form-data</li>
         <li>application/x-www-form-urlencoded</li>
       </ul>
-      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, bodyParse } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-typescript hljs">import { Req, Res, Router, WebApp, bodyParse } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 // ...
 
@@ -415,7 +415,7 @@ app.set500(async (req: any, res: any) => {
       <h2 id="https">HTTPS</h2>
       <p>HTTPS is supported in all modern browsers.</p>
 
-      <pre><code class="language-typescript hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.0/mod.ts";
+      <pre><code class="language-typescript hljs">import { WebApp, Router, Req, Res } from "https://deno.land/x/denorest@v2.1/mod.ts";
 
 const app = new WebApp();
 const router = new Router();
